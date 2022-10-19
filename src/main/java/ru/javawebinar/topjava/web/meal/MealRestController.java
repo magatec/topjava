@@ -2,23 +2,24 @@ package ru.javawebinar.topjava.web.meal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
-@Service
+@Controller
 public class MealRestController {
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private MealService service;
 
@@ -40,17 +41,18 @@ public class MealRestController {
 
     public List<MealTo> getAll() {
         log.info("getAll {}", authUserId());
-        return MealsUtil.getTos(service.getAll(authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
+        return MealsUtil.getTos(service.getAll(authUserId()), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public List<MealTo> getAllFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+    public List<MealTo> getAllFiltered(String startDate, String endDate, String startTime, String endTime) {
         log.info("getAllFiltered {}", authUserId());
-        return MealsUtil.getTos(service.getAllFiltered(authUserId(), startDate, endDate, startTime, endTime)
-                , MealsUtil.DEFAULT_CALORIES_PER_DAY);
+        return MealsUtil.getTos(service.getAllFiltered(authUserId(), startDate, endDate, startTime, endTime),
+                SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public void update(Meal meal, int userId) {
-        log.info("update {} from user {}", meal, userId);
-        service.update(meal, userId);
+    public void update(Meal meal, int id) {
+        log.info("update {} with id {}", meal, id);
+        ValidationUtil.assureIdConsistent(meal, id);
+        service.update(meal, id);
     }
 }
