@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
+@Service
 public class MealService {
 
     private MealRepository repository;
@@ -33,9 +35,8 @@ public class MealService {
         return repository.getAll(userId);
     }
 
-    public List<Meal> getAllFiltered(int userId, String startData, String endData, String startTime, String endTime) {
-        return repository.getAllFiltered(userId, LocalDate.parse(startData), LocalDate.parse(endData)
-                , LocalTime.parse(startTime), LocalTime.parse(endTime));
+    public List<Meal> getAllFiltered(int userId, LocalDate startData, LocalDate endData, LocalTime startTime, LocalTime endTime) {
+        return repository.getAllFiltered(userId, startData, endData, startTime, endTime);
     }
 
     public void update(Meal meal, int userId) {

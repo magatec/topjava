@@ -69,18 +69,6 @@ public class MealServlet extends HttpServlet {
                 LocalTime startTime = LocalTime.parse(request.getParameter("startTime"));
                 LocalTime endTime = LocalTime.parse(request.getParameter("endTime"));
 
-                if (startDate == null) {
-                    startDate = LocalDate.MIN;
-                }
-                if (endDate == null) {
-                    endDate = LocalDate.MAX;
-                }
-                if (startTime == null) {
-                    startTime = LocalTime.MIN;
-                }
-                if (endTime == null) {
-                    endTime = LocalTime.now();
-                }
                 request.setAttribute("meals", MealsUtil.getTos(
                         repository.getAllFiltered(SecurityUtil.authUserId(), startDate, endDate, startTime, endTime)
                         , MealsUtil.DEFAULT_CALORIES_PER_DAY));
