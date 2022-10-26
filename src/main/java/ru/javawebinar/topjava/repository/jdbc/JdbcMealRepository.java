@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.ValidationUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,11 +38,11 @@ public class JdbcMealRepository implements MealRepository {
     @Override
     public Meal save(Meal meal, int userId) {
         MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValues("id", meal.getId())
-                .addValues("datetime", meal.getDateTime())
-                .addValues("description", meal.getDescription())
-                .addValues("calories", meal.getCalories())
-                .addValues("userId", userId);
+                .addValue("id", meal.getId())
+                .addValue("date_time", meal.getDateTime())
+                .addValue("description", meal.getDescription())
+                .addValue("calories", meal.getCalories())
+                .addValue("user_Id", userId);
 
         if (meal.isNew()) {
             Number newId = insertMeal.executeAndReturnKey(map);
@@ -77,6 +76,7 @@ public class JdbcMealRepository implements MealRepository {
     public List<Meal> getAll(int userId) {
         return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", ROW_MAPPER, userId);
     }
+
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
