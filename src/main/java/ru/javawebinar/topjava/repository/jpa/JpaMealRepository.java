@@ -23,17 +23,17 @@ public class JpaMealRepository implements MealRepository {
     public Meal save(Meal meal, int userId) {
         User user = em.getReference(User.class, userId);
         meal.setUser(user);
-        if(meal.isNew()) {
+        if (meal.isNew()) {
             em.persist(meal);
             return meal;
         } else {
             Meal m = get(meal.id(), userId);
             return em.merge(m);
         }
-
     }
 
     @Override
+    @Transactional
     public boolean delete(int id, int userId) {
         return em.createNamedQuery(Meal.DELETE)
                 .setParameter("id", id)
